@@ -8,6 +8,7 @@ BASE_URL = os.environ.get('OLLAMA_HOST', 'http://localhost:11434')
 # The final response object will include statistics and additional data from the request. Use the callback function to override
 # the default handler.
 def generate(model_name, prompt, system=None, template=None, context=None, options=None, callback=None):
+    print("Starting the generation process...")
     try:
         url = f"{BASE_URL}/api/generate"
         payload = {
@@ -111,11 +112,17 @@ def pull(model_name, insecure=False, callback=None):
                     if 'digest' in chunk:
                         print(f" - Digest: {chunk['digest']}", end='', flush=True)
                         print(f" - Total: {chunk['total']}", end='', flush=True)
-                        print(f" - Completed: {chunk['completed']}", end='\n', flush=True)
+                        
+                        # Check if the 'completed' field exists before printing
+                        if 'completed' in chunk:
+                            print(f" - Completed: {chunk['completed']}", end='\n', flush=True)
+                        else:
+                            print(f" - Completed: N/A", end='\n', flush=True)
                     else:
                         print()
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
+
 
 # Push a model to the model registry. Use the callback function to override the default handler.
 def push(model_name, insecure=False, callback=None):
@@ -199,17 +206,19 @@ def delete(model_name):
 
 # Show info about a model.
 def show(model_name):
-    try:
+    print("calling show api")
+    try:  
         url = f"{BASE_URL}/api/show"
         payload = {"name": model_name}
         response = requests.post(url, json=payload)
         response.raise_for_status()
+        print("calling show api")
         
         # Parse the JSON response and return it
         data = response.json()
         return data
     except requests.exceptions.RequestException as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred21321: {e}")
         return None
 
 def heartbeat():

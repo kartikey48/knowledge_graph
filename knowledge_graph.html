@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "##COVID -", "label": "##COVID -", "shape": "dot"}, {"color": "#97c2fc", "id": "MISC", "label": "MISC", "shape": "dot"}, {"color": "#97c2fc", "id": "##I", "label": "##I", "shape": "dot"}, {"color": "#97c2fc", "id": "LOC", "label": "LOC", "shape": "dot"}, {"color": "#97c2fc", "id": "##National Health Protection Mission", "label": "##National Health Protection Mission", "shape": "dot"}, {"color": "#97c2fc", "id": "##a", "label": "##a", "shape": "dot"}, {"color": "#97c2fc", "id": "##angeeta G", "label": "##angeeta G", "shape": "dot"}, {"color": "#97c2fc", "id": "PER", "label": "PER", "shape": "dot"}, {"color": "#97c2fc", "id": "##axena", "label": "##axena", "shape": "dot"}, {"color": "#97c2fc", "id": "##dia", "label": "##dia", "shape": "dot"}, {"color": "#97c2fc", "id": "##dian", "label": "##dian", "shape": "dot"}, {"color": "#97c2fc", "id": "##ndia", "label": "##ndia", "shape": "dot"}, {"color": "#97c2fc", "id": "##tractIndia", "label": "##tractIndia", "shape": "dot"}, {"color": "#97c2fc", "id": "A", "label": "A", "shape": "dot"}, {"color": "#97c2fc", "id": "AN", "label": "AN", "shape": "dot"}, {"color": "#97c2fc", "id": "ORG", "label": "ORG", "shape": "dot"}, {"color": "#97c2fc", "id": "AS", "label": "AS", "shape": "dot"}, {"color": "#97c2fc", "id": "ASHA", "label": "ASHA", "shape": "dot"}, {"color": "#97c2fc", "id": "AYUSH", "label": "AYUSH", "shape": "dot"}, {"color": "#97c2fc", "id": "Ayurveda", "label": "Ayurveda", "shape": "dot"}, {"color": "#97c2fc", "id": "Ayushman Bharat", "label": "Ayushman Bharat", "shape": "dot"}, {"color": "#97c2fc", "id": "Brazil", "label": "Brazil", "shape": "dot"}, {"color": "#97c2fc", "id": "CC - BY", "label": "CC - BY", "shape": "dot"}, {"color": "#97c2fc", "id": "COVID", "label": "COVID", "shape": "dot"}, {"color": "#97c2fc", "id": "COVID - 19", "label": "COVID - 19", "shape": "dot"}, {"color": "#97c2fc", "id": "China", "label": "China", "shape": "dot"}, {"color": "#97c2fc", "id": "Coastal Carolina University", "label": "Coastal Carolina University", "shape": "dot"}, {"color": "#97c2fc", "id": "Conway", "label": "Conway", "shape": "dot"}, {"color": "#97c2fc", "id": "Covid - 19", "label": "Covid - 19", "shape": "dot"}, {"color": "#97c2fc", "id": "Creative Commons Attribution License", "label": "Creative Commons Attribution License", "shape": "dot"}, {"color": "#97c2fc", "id": "Digital Technologies", "label": "Digital Technologies", "shape": "dot"}, {"color": "#97c2fc", "id": "Domestic", "label": "Domestic", "shape": "dot"}, {"color": "#97c2fc", "id": "Godfrey", "label": "Godfrey", "shape": "dot"}, {"color": "#97c2fc", "id": "Government of India", "label": "Government of India", "shape": "dot"}, {"color": "#97c2fc", "id": "Health", "label": "Health", "shape": "dot"}, {"color": "#97c2fc", "id": "Health Centers", "label": "Health Centers", "shape": "dot"}, {"color": "#97c2fc", "id": "Hershey", "label": "Hershey", "shape": "dot"}, {"color": "#97c2fc", "id": "High", "label": "High", "shape": "dot"}, {"color": "#97c2fc", "id": "ICMJE", "label": "ICMJE", "shape": "dot"}, {"color": "#97c2fc", "id": "India", "label": "India", "shape": "dot"}, {"color": "#97c2fc", "id": "Indian", "label": "Indian", "shape": "dot"}, {"color": "#97c2fc", "id": "Indians", "label": "Indians", "shape": "dot"}, {"color": "#97c2fc", "id": "Medical Commission", "label": "Medical Commission", "shape": "dot"}, {"color": "#97c2fc", "id": "NH", "label": "NH", "shape": "dot"}, {"color": "#97c2fc", "id": "NHM", "label": "NHM", "shape": "dot"}, {"color": "#97c2fc", "id": "NMC", "label": "NMC", "shape": "dot"}, {"color": "#97c2fc", "id": "NMC Act", "label": "NMC Act", "shape": "dot"}, {"color": "#97c2fc", "id": "NarayanaHealth", "label": "NarayanaHealth", "shape": "dot"}, {"color": "#97c2fc", "id": "National Health Mission", "label": "National Health Mission", "shape": "dot"}, {"color": "#97c2fc", "id": "National Health Policy", "label": "National Health Policy", "shape": "dot"}, {"color": "#97c2fc", "id": "National Medical Council", "label": "National Medical Council", "shape": "dot"}, {"color": "#97c2fc", "id": "National Medical CouncilIndia", "label": "National Medical CouncilIndia", "shape": "dot"}, {"color": "#97c2fc", "id": "Online", "label": "Online", "shape": "dot"}, {"color": "#97c2fc", "id": "Penn State College ofMedicine", "label": "Penn State College ofMedicine", "shape": "dot"}, {"color": "#97c2fc", "id": "Public Health Sciences", "label": "Public Health Sciences", "shape": "dot"}, {"color": "#97c2fc", "id": "R", "label": "R", "shape": "dot"}, {"color": "#97c2fc", "id": "Sangeeta G", "label": "Sangeeta G", "shape": "dot"}, {"color": "#97c2fc", "id": "Saxena", "label": "Saxena", "shape": "dot"}, {"color": "#97c2fc", "id": "Siddha", "label": "Siddha", "shape": "dot"}, {"color": "#97c2fc", "id": "Thomas Godfrey", "label": "Thomas Godfrey", "shape": "dot"}, {"color": "#97c2fc", "id": "US", "label": "US", "shape": "dot"}, {"color": "#97c2fc", "id": "USA", "label": "USA", "shape": "dot"}, {"color": "#97c2fc", "id": "Unani", "label": "Unani", "shape": "dot"}, {"color": "#97c2fc", "id": "University of Nottingham", "label": "University of Nottingham", "shape": "dot"}, {"color": "#97c2fc", "id": "WHO", "label": "WHO", "shape": "dot"}, {"color": "#97c2fc", "id": "World Health Organization", "label": "World Health Organization", "shape": "dot"}, {"color": "#97c2fc", "id": "eVin", "label": "eVin", "shape": "dot"}, {"color": "#97c2fc", "id": "sang", "label": "sang", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "##COVID -", "to": "MISC", "value": 1}, {"from": "MISC", "to": "##National Health Protection Mission", "value": 1}, {"from": "MISC", "to": "##dian", "value": 1}, {"from": "MISC", "to": "A", "value": 1}, {"from": "MISC", "to": "AS", "value": 1}, {"from": "MISC", "to": "AYUSH", "value": 1}, {"from": "MISC", "to": "Ayurveda", "value": 1}, {"from": "MISC", "to": "Ayushman Bharat", "value": 2}, {"from": "MISC", "to": "CC - BY", "value": 1}, {"from": "MISC", "to": "COVID", "value": 1}, {"from": "MISC", "to": "COVID - 19", "value": 2}, {"from": "MISC", "to": "Covid - 19", "value": 1}, {"from": "MISC", "to": "Creative Commons Attribution License", "value": 1}, {"from": "MISC", "to": "Domestic", "value": 1}, {"from": "MISC", "to": "High", "value": 1}, {"from": "MISC", "to": "Indian", "value": 3}, {"from": "MISC", "to": "Indians", "value": 3}, {"from": "MISC", "to": "NMC Act", "value": 1}, {"from": "MISC", "to": "National Health Policy", "value": 1}, {"from": "MISC", "to": "Online", "value": 1}, {"from": "MISC", "to": "R", "value": 1}, {"from": "MISC", "to": "Siddha", "value": 1}, {"from": "MISC", "to": "US", "value": 2}, {"from": "MISC", "to": "Unani", "value": 1}, {"from": "MISC", "to": "eVin", "value": 1}, {"from": "##I", "to": "LOC", "value": 1}, {"from": "LOC", "to": "##a", "value": 1}, {"from": "LOC", "to": "##dia", "value": 1}, {"from": "LOC", "to": "##ndia", "value": 1}, {"from": "LOC", "to": "##tractIndia", "value": 1}, {"from": "LOC", "to": "A", "value": 1}, {"from": "LOC", "to": "Brazil", "value": 1}, {"from": "LOC", "to": "China", "value": 1}, {"from": "LOC", "to": "Conway", "value": 1}, {"from": "LOC", "to": "Health Centers", "value": 1}, {"from": "LOC", "to": "Hershey", "value": 1}, {"from": "LOC", "to": "India", "value": 28}, {"from": "LOC", "to": "US", "value": 5}, {"from": "LOC", "to": "USA", "value": 2}, {"from": "##angeeta G", "to": "PER", "value": 1}, {"from": "PER", "to": "##axena", "value": 1}, {"from": "PER", "to": "Godfrey", "value": 1}, {"from": "PER", "to": "Sangeeta G", "value": 1}, {"from": "PER", "to": "Saxena", "value": 6}, {"from": "PER", "to": "Thomas Godfrey", "value": 1}, {"from": "PER", "to": "sang", "value": 1}, {"from": "AN", "to": "ORG", "value": 4}, {"from": "ORG", "to": "AS", "value": 4}, {"from": "ORG", "to": "ASHA", "value": 1}, {"from": "ORG", "to": "Coastal Carolina University", "value": 1}, {"from": "ORG", "to": "Digital Technologies", "value": 1}, {"from": "ORG", "to": "Government of India", "value": 1}, {"from": "ORG", "to": "Health", "value": 1}, {"from": "ORG", "to": "ICMJE", "value": 1}, {"from": "ORG", "to": "Medical Commission", "value": 1}, {"from": "ORG", "to": "NH", "value": 2}, {"from": "ORG", "to": "NHM", "value": 2}, {"from": "ORG", "to": "NMC", "value": 1}, {"from": "ORG", "to": "NarayanaHealth", "value": 1}, {"from": "ORG", "to": "National Health Mission", "value": 1}, {"from": "ORG", "to": "National Medical Council", "value": 3}, {"from": "ORG", "to": "National Medical CouncilIndia", "value": 1}, {"from": "ORG", "to": "Penn State College ofMedicine", "value": 1}, {"from": "ORG", "to": "Public Health Sciences", "value": 2}, {"from": "ORG", "to": "R", "value": 2}, {"from": "ORG", "to": "University of Nottingham", "value": 1}, {"from": "ORG", "to": "WHO", "value": 2}, {"from": "ORG", "to": "World Health Organization", "value": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

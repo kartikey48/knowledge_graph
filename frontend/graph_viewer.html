@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Graph Viewer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .upload-section {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .file-input:hover {
+            border-color: #4A90E2;
+            background: #f0f8ff;
+        }
+        
+        .file-input.dragover {
+            border-color: #4A90E2;
+            background: #e3f2fd;
+        }
+        
+        .layout-select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .upload-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4A90E2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(330deg); }
+        }
+        
+        .graph-container {
+            display: none;
+            padding: 20px;
+        }
+        
+        .graph-container.show {
+            display: block;
+        }
+        
+        .graph-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .graph-info {
+            display: flex;
+            gap: 20px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .graph-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: #5a6268;
+        }
+        
+        .action-btn.primary {
+            background: #007bff;
+        }
+        
+        .action-btn.primary:hover {
+            background: #0056b3;
+        }
+        
+        .graph-iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .error, .success {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .metadata-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .metadata-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4A90E2;
+        }
+        
+        .metadata-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .metadata-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .upload-section {
+                padding: 20px;
+            }
+            
+            .graph-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .graph-info {
+                justify-content: center;
+            }
+            
+            .graph-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Knowledge Graph Viewer</h1>
+            <p>Upload a PDF document to extract and visualize knowledge relationships</p>
+        </div>
+        
+        <div class="upload-section">
+            <form class="upload-form" id="uploadForm">
+                <div class="form-group">
+                    <label for="fileInput">Select PDF Document</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                        <div class="file-input" id="fileInputDisplay">
+                            Click to select a PDF file or drag and drop here
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="layoutSelect">Graph Layout</label>
+                    <select id="layoutSelect" class="layout-select">
+                        <option value="force">Force-Directed (Default)</option>
+                        <option value="hierarchical">Hierarchical</option>
+                        <option value="circular">Circular</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="upload-btn" id="uploadBtn">
+                    Generate Knowledge Graph
+                </button>
+            </form>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3>Processing your document...</h3>
+            <p>Extracting concepts and relationships. This may take a few moments.</p>
+        </div>
+        
+        <div class="graph-container" id="graphContainer">
+            <div class="metadata-panel" id="metadataPanel" style="display: none;">
+                <h3>Document Analysis Results</h3>
+                <div class="metadata-grid" id="metadataGrid">
+                    <!-- Metadata will be populated here -->
+                </div>
+            </div>
+            
+            <div class="graph-controls" id="graphControls" style="display: none;">
+                <div class="graph-info" id="graphInfo">
+                    <!-- Graph stats will be populated here -->
+                </div>
+                <div class="graph-actions">
+                    <button class="action-btn" onclick="refreshGraph()">Refresh</button>
+                    <button class="action-btn primary" onclick="downloadGraph()">Download HTML</button>
+                    <button class="action-btn" onclick="exportImage()">Export PNG</button>
+                </div>
+            </div>
+            
+            <iframe id="graphIframe" class="graph-iframe" style="display: none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+        let currentGraphData = null;
+        let currentMetadata = null;
+        
+        // DOM elements
+        const fileInput = document.getElementById('fileInput');
+        const fileInputDisplay = document.getElementById('fileInputDisplay');
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const loading = document.getElementById('loading');
+        const graphContainer = document.getElementById('graphContainer');
+        const graphIframe = document.getElementById('graphIframe');
+        const layoutSelect = document.getElementById('layoutSelect');
+        const metadataPanel = document.getElementById('metadataPanel');
+        const metadataGrid = document.getElementById('metadataGrid');
+        const graphControls = document.getElementById('graphControls');
+        const graphInfo = document.getElementById('graphInfo');
+        
+        // File input handling
+        fileInputDisplay.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileInputDisplay.textContent = `Selected: ${file.name}`;
+                fileInputDisplay.style.background = '#e3f2fd';
+                fileInputDisplay.style.borderColor = '#4A90E2';
+            }
+        });
+        
+        // Drag and drop handling
+        fileInputDisplay.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileInputDisplay.classList.add('dragover');
+        });
+        
+        fileInputDisplay.addEventListener('dragleave', () => {
+            fileInputDisplay.classList.remove('dragover');
+        });
+        
+        fileInputDisplay.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInputDisplay.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'application/pdf') {
+                fileInput.files = files;
+                fileInputDisplay.textContent = `Selected: ${files[0].name}`;
+                fileInputDisplay.style.background = '#e3f2fd';
+                fileInputDisplay.style.borderColor = '#4A90E2';
+            } else {
+                showError('Please drop a valid PDF file.');
+            }
+        });
+        
+        // Form submission
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const file = fileInput.files[0];
+            if (!file) {
+                showError('Please select a PDF file.');
+                return;
+            }
+            
+            if (file.type !== 'application/pdf') {
+                showError('Please select a valid PDF file.');
+                return;
+            }
+            
+            await uploadAndProcessFile(file);
+        });
+        
+        async function uploadAndProcessFile(file) {
+            try {
+                // Show loading state
+                showLoading();
+                hideMessages();
+                
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const layout = layoutSelect.value;
+                
+                // Upload file
+                const response = await fetch(`${API_BASE_URL}/upload?layout=${layout}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Upload failed');
+                }
+                
+                const result = await response.json();
+                
+                // Store data
+                currentGraphData = result;
+                currentMetadata = result.metadata;
+                
+                // Display results
+                displayMetadata(result.metadata);
+                displayGraph(result);
+                
+                showSuccess('Knowledge graph generated successfully!');
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                showError(`Failed to process file: ${error.message}`);
+            } finally {
+                hideLoading();
+            }
+        }
+        
+        function displayMetadata(metadata) {
+            const metadataItems = [
+                { label: 'Filename', value: metadata.filename },
+                { label: 'Text Length', value: `${metadata.text_length.toLocaleString()} chars` },
+                { label: 'Relationships', value: metadata.num_relationships },
+                { label: 'Nodes', value: metadata.num_nodes },
+                { label: 'Edges', value: metadata.num_edges },
+                { label: 'Graph Density', value: metadata.graph_density?.toFixed(3) || 'N/A' },
+                { label: 'Layout', value: metadata.layout?.toUpperCase() || 'FORCE' }
+            ];
+            
+            metadataGrid.innerHTML = metadataItems.map(item => `
+                <div class="metadata-item">
+                    <div class="metadata-label">${item.label}</div>
+                    <div class="metadata-value">${item.value}</div>
+                </div>
+            `).join('');
+            
+            metadataPanel.style.display = 'block';
+        }
+        
+        function displayGraph(result) {
+            // Check if we have PyVis visualization
+            if (result.visualization && result.visualization.html_content) {
+                // Use PyVis visualization
+                const htmlContent = result.visualization.html_content;
+                
+                // Create blob URL for the HTML content
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                
+                graphIframe.src = url;
+                graphIframe.style.display = 'block';
+                
+                // Update graph info
+                const metrics = result.visualization.metrics;
+                graphInfo.innerHTML = `
+                    <span><strong>Nodes:</strong> ${metrics.num_nodes}</span>
+                    <span><strong>Edges:</strong> ${metrics.num_edges}</span>
+                    <span><strong>Density:</strong> ${metrics.density?.toFixed(3) || 'N/A'}</span>
+                    <span><strong>Most Central:</strong> ${metrics.most_central_node || 'N/A'}</span>
+                `;
+                
+                graphControls.style.display = 'flex';
+                graphContainer.classList.add('show');
+                
+                // Clean up blob URL after iframe loads
+                graphIframe.onload = () => URL.revokeObjectURL(url);
+            }
+        }
+        
+        function exportGraphImage() {
+            // This function will be called from within the iframe
+            const iframe = document.getElementById('graphIframe');
+            if (iframe && iframe.contentWindow) {
+                // Send message to iframe to export image
+                iframe.contentWindow.postMessage({ action: 'exportImage' }, '*');
+            } else {
+                showError('Graph not loaded yet. Please wait for the visualization to complete.');
+            }
+        }
+        
+        // Listen for messages from iframe
+        window.addEventListener('message', function(event) {
+            if (event.data.action === 'imageExported') {
+                showSuccess('Graph image exported successfully!');
+            }
+        });
+        
+        function showError(message) {
+            hideMessages();
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.innerHTML = `<strong>Error:</strong> ${message}`;
+            document.querySelector('.container').appendChild(errorDiv);
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.parentNode.removeChild(errorDiv);
+                }
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            hideMessages();
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.innerHTML = `<strong>Success:</strong> ${message}`;
+            document.querySelector('.container').appendChild(successDiv);
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                if (successDiv.parentNode) {
+                    successDiv.parentNode.removeChild(successDiv);
+                }
+            }, 3000);
+        }
+        
+        function hideMessages() {
+            const messages = document.querySelectorAll('.error, .success');
+            messages.forEach(msg => {
+                if (msg.parentNode) {
+                    msg.parentNode.removeChild(msg);
+                }
+            });
+        }
+        
+        // Handle iframe load errors
+        document.getElementById('graphIframe').addEventListener('error', function() {
+            showError('Failed to load graph visualization.');
+        });
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'o':
+                        e.preventDefault();
+                        fileInput.click();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        if (currentGraphData) {
+                            document.getElementById('downloadHtml').click();
+                        }
+                        break;
+                }
+            }
+        });
+        
+        // Add tooltips for better UX
+        function addTooltips() {
+            const tooltipElements = [
+                { element: document.getElementById('layoutSelect'), text: 'Choose how nodes are arranged in the graph' },
+                { element: document.querySelector('.download-btn'), text: 'Download the interactive graph as HTML file' }
+            ];
+            
+            tooltipElements.forEach(({ element, text }) => {
+                if (element) {
+                    element.title = text;
+                }
+            });
+        }
+        
+        // Initialize tooltips when page loads
+        document.addEventListener('DOMContentLoaded', addTooltips);
+        
+        // Add progress tracking for large files
+        function trackUploadProgress(file) {
+            const progressBar = document.createElement('div');
+            progressBar.style.cssText = `
+                width: 100%;
+                height: 4px;
+                background: #f0f0f0;
+                border-radius: 2px;
+                margin: 10px 0;
+                overflow: hidden;
+            `;
+            
+            const progressFill = document.createElement('div');
+            progressFill.style.cssText = `
+                height: 100%;
+                background: linear-gradient(90deg, #4A90E2, #357ABD);
+                width: 0%;
+                transition: width 0.3s ease;
+                border-radius: 2px;
+            `;
+            
+            progressBar.appendChild(progressFill);
+            document.getElementById('loading').appendChild(progressBar);
+            
+            // Simulate progress for large files
+            if (file.size > 5 * 1024 * 1024) { // 5MB+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    progressFill.style.width = progress + '%';
+                    
+                    if (progress >= 90) {
+                        clearInterval(interval);
+                    }
+                }, 500);
+                
+                return () => {
+                    clearInterval(interval);
+                    progressFill.style.width = '100%';
+                    setTimeout(() => {
+                        if (progressBar.parentNode) {
+                            progressBar.parentNode.removeChild(progressBar);
+                        }
+                    }, 500);
+                };
+            }
+            
+            return () => {
+                if (progressBar.parentNode) {
+                    progressBar.parentNode.removeChild(progressBar);
+                }
+            };
+        }
+    </script>
+</body>
+</html>

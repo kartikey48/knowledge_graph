@@ -1,0 +1,134 @@
+.graph-container {
+  width: 100%;
+  margin: 20px 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.graph-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px 8px 0 0;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-group label {
+  font-weight: 600;
+  color: #495057;
+  margin: 0;
+}
+
+.layout-select {
+  padding: 6px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+  min-width: 180px;
+}
+
+.layout-select:focus {
+  outline: none;
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.control-btn {
+  padding: 8px 16px;
+  background: #4A90E2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.control-btn:hover {
+  background: #357ABD;
+}
+
+.control-btn:active {
+  background: #2E5C8A;
+}
+
+.cytoscape-container {
+  position: relative;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.graph-info {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 10px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.graph-info span {
+  font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .graph-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .control-group {
+    justify-content: space-between;
+  }
+  
+  .layout-select {
+    min-width: auto;
+    flex: 1;
+  }
+  
+  .cytoscape-container {
+    height: 400px;
+  }
+}
+
+/* Loading state */
+.graph-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+/* Error state */
+.graph-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  color: #721c24;
+  font-size: 16px;
+}

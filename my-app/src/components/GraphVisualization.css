@@ -1,0 +1,308 @@
+.graph-visualization {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.graph-controls {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.layout-selector {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.layout-selector:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.graph-controls button {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.graph-controls button:hover,
+.layout-selector:hover {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.graph-controls button:active {
+  transform: translateY(0);
+}
+
+.cytoscape-container {
+  border: 1px solid #e0e0e0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.cytoscape-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.graph-instructions {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+  border-bottom: 1px solid #bbdefb;
+  padding: 15px 20px;
+  text-align: left;
+}
+
+.graph-instructions p {
+  margin: 0 0 8px 0;
+  color: #1565c0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.graph-instructions ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #1976d2;
+}
+
+.graph-instructions li {
+  margin: 4px 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.graph-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border: 2px dashed #e0e0e0;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.placeholder-content {
+  text-align: center;
+  color: #718096;
+}
+
+.placeholder-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.6;
+}
+
+.placeholder-content h3 {
+  margin: 0 0 10px 0;
+  color: #4a5568;
+  font-size: 1.5rem;
+}
+
+.placeholder-content p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #718096;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .graph-controls {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+  
+  .graph-controls button,
+  .layout-selector {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .cytoscape-container {
+    height: 500px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .graph-controls {
+    position: static;
+    justify-content: center;
+    margin: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .graph-instructions {
+    padding: 12px 15px;
+  }
+  
+  .graph-instructions p {
+    font-size: 0.9rem;
+  }
+  
+  .graph-instructions li {
+    font-size: 0.8rem;
+  }
+  
+  .cytoscape-container {
+    height: 450px !important;
+    margin: 0;
+  }
+  
+  .placeholder-icon {
+    font-size: 3rem;
+  }
+  
+  .placeholder-content h3 {
+    font-size: 1.3rem;
+  }
+  
+  .placeholder-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cytoscape-container {
+    height: 400px !important;
+  }
+  
+  .graph-controls button,
+  .layout-selector {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+    min-width: 32px;
+  }
+  
+  .graph-instructions {
+    padding: 10px 12px;
+  }
+}
+
+/* Loading state for graph */
+.graph-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12px;
+}
+
+.graph-loading-content {
+  text-align: center;
+}
+
+.graph-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #e2e8f0;
+  border-top: 5px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+.graph-loading-content p {
+  margin: 0;
+  color: #4a5568;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .graph-visualization {
+    background: #1a202c;
+  }
+  
+  .cytoscape-container {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    border-color: #4a5568;
+  }
+  
+  .graph-instructions {
+    background: linear-gradient(135deg, #2a4365 0%, #2c5282 100%);
+    border-color: #3182ce;
+    color: #e2e8f0;
+  }
+  
+  .graph-instructions p {
+    color: #90cdf4;
+  }
+  
+  .graph-instructions li {
+    color: #bee3f8;
+  }
+  
+  .graph-controls button,
+  .layout-selector {
+    background: rgba(45, 55, 72, 0.95);
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+  
+  .graph-controls button:hover,
+  .layout-selector:hover {
+    background: #2d3748;
+  }
+  
+  .graph-placeholder {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    border-color: #4a5568;
+  }
+  
+  .placeholder-content h3 {
+    color: #e2e8f0;
+  }
+  
+  .placeholder-content p {
+    color: #a0aec0;
+  }
+}
+/* Add this to your CSS file or as a style tag */
+.cytoscape-container .cy-edge-text {
+  color: white !important;
+  fill: white !important;
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore how concepts connect in PDFs and text.">
+<title>Knowledge Graph Explorer</title>
+<link rel="stylesheet" href="./style.css">
+<script defer src="./vis-network.min.js"></script>
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<header><span class="mark" aria-hidden="true">✳</span><strong>Knowledge Graph</strong><a href="https://github.com/kartikey48/knowledge_graph">GitHub</a></header>
+<main>
+<section class="intro"><h1>See how ideas connect.</h1><p>Turn a PDF or pasted text into a graph you can search and explore.</p><p><a style="color:var(--accent)" href="./guide.html" target="_blank" rel="noopener">New here? Read the user guide (opens in a new tab)</a></p></section>
+<div class="workspace">
+<aside class="panel input">
+<h2>Source</h2>
+<label class="upload">Choose a PDF<input id="pdf" type="file" accept=".pdf,application/pdf"></label>
+<p class="muted" id="file-note">Text-based PDFs · up to 20 MB and 100 pages</p>
+<label for="source">Or paste text</label>
+<textarea id="source" maxlength="120000" placeholder="Paste an article, research notes, or any text…"></textarea>
+<button id="generate" class="primary">Generate graph</button>
+<button id="sample">Load sample graph</button>
+<p class="muted">PDFs and pasted text are processed in this browser. Generated edges show terms that appear together.</p>
+</aside>
+<section class="panel graph-panel" aria-label="Graph explorer">
+<div class="bar"><div><h2>Graph explorer</h2><p id="counts" class="muted"></p></div><div class="actions"><button id="view">Full graph</button><button id="zoom-out" aria-label="Zoom out" title="Zoom out">&#8722;</button><button id="zoom-in" aria-label="Zoom in" title="Zoom in">+</button><button id="fit">Fit graph</button><button id="export">Export JSON</button></div></div>
+<div id="graph" aria-label="Interactive concept network"></div>
+<div id="legend" class="legend">Scroll to zoom · Drag to pan · Select a node to see its connections</div>
+</section>
+<aside class="panel details">
+<h2>Concepts</h2><label for="search">Find a concept</label><input type="search" id="search" placeholder="Search concepts">
+<div id="results"></div><hr><div id="details"><p class="muted">Select a concept to see its connections.</p></div>
+</aside>
+</div>
+<p id="status" role="status" aria-live="polite"></p>
+</main>
+</body>
+</html>

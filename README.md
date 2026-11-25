@@ -107,3 +107,13 @@ This project needs a lot more work. There are some wonderful ideas suggested by 
     2. User selects what they're interested in
     3. This expands to show sub-topics, sub-concepts, sub-x, etc.
     4. This is how you get deep into a specialty
+
+## Browser-based explorer
+
+Run the static browser edition with Python from the repository root:
+
+```sh
+python -m http.server 8080 --directory frontend/explorer
+```
+
+Open http://localhost:8080 to explore the sample graph or create a graph from a PDF or pasted text. See [the explorer README](frontend/explorer/README.md) for supported inputs and hosting details.

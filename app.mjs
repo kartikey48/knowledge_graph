@@ -15,9 +15,7 @@ function conceptButton(id) {
   const button = element('button', id);
   button.type = 'button';
   button.onclick = () => {
-    network.selectNodes([id]);
-    network.focus(id, { scale: Math.max(network.getScale(), 0.7), animation: true });
-    showConcept(id);
+    selectConcept(id);
   };
   return button;
 }
@@ -48,13 +46,57 @@ function showResults() {
     : [element('p', 'No matching concepts.')]));
 }
 
+let focusId;
+let fullView = false;
+
+function selectConcept(id) {
+  focusId = id;
+  if (fullView) {
+    network.selectNodes([id]);
+    network.focus(id, { scale: Math.max(network.getScale(), 0.8), animation: true });
+  } else {
+    draw();
+  }
+  showConcept(id);
+}
+
 function render(data) {
-  network?.destroy();
   graph = data;
+  const degree = new Map(data.nodes.map(node => [node.id, 0]));
+  for (const { from, to } of data.edges) {
+    degree.set(from, degree.get(from) + 1);
+    degree.set(to, degree.get(to) + 1);
+  }
+  focusId = [...degree].sort((a, b) => b[1] - a[1])[0][0];
+  fullView = false;
+  draw();
+  showConcept(focusId);
+  get('search').value = '';
+  showResults();
+}
+
+function draw() {
+  network?.destroy();
+  const ranked = graph.edges.filter(edge => edge.from === focusId || edge.to === focusId)
+    .sort((a, b) => (b.count ?? 1) - (a.count ?? 1));
+  const neighbors = [...new Set(ranked.map(edge => edge.from === focusId ? edge.to : edge.from))].slice(0, 6);
+  const positions = new Map([[focusId, { x: 0, y: 0 }]]);
+  neighbors.forEach((id, index) => {
+    const angle = 2 * Math.PI * index / neighbors.length - Math.PI / 2;
+    positions.set(id, { x: 195 * Math.cos(angle), y: 138 * Math.sin(angle) });
+  });
+  const data = fullView ? graph : {
+    nodes: graph.nodes.filter(node => positions.has(node.id)),
+    edges: neighbors.map(id => ranked.find(edge => edge.from === id || edge.to === id))
+  };
+  get('view').textContent = fullView ? 'Focus view' : 'Full graph';
   const colors = ['#a998ff', '#68d9c4', '#f4bc88', '#8ab8ff'];
   network = new window.vis.Network(get('graph'), {
     nodes: new window.vis.DataSet(data.nodes.map((node, index) => ({
-      ...node, color: colors[(node.id.length + index) % colors.length],
+      ...node,
+      ...(fullView ? {} : { ...positions.get(node.id), shape: 'box', widthConstraint: { maximum: 125 }, margin: 8,
+        font: { color: '#10131e', size: 17, strokeWidth: 0 } }),
+      color: colors[(node.id.length + index) % colors.length],
       size: Math.min(24, 10 + (node.count ?? 1))
     }))),
     edges: new window.vis.DataSet(data.edges.map(edge => ({
@@ -65,16 +107,23 @@ function render(data) {
     nodes: { shape: 'dot', font: { color: '#f3f5ff', size: 15, strokeWidth: 4, strokeColor: '#131827' } },
     edges: { color: { color: '#465571', highlight: '#b5a6ff' }, smooth: false },
     interaction: { navigationButtons: false, hideEdgesOnDrag: true },
-    physics: { stabilization: { iterations: 200 } }
+    physics: fullView ? { barnesHut: { springLength: 150, avoidOverlap: 0.7 }, stabilization: { iterations: 220 } } : false
   });
   network.on('click', event => {
-    if (event.nodes.length) showConcept(event.nodes[0]);
+    if (event.nodes.length) selectConcept(event.nodes[0]);
   });
-  get('counts').textContent = data.nodes.length + ' concepts Â· ' + data.edges.length + ' connections';
-  get('details').replaceChildren(element('p', 'Select a concept to see its connections.'));
-  get('search').value = '';
-  showResults();
+  get('counts').textContent = fullView
+    ? graph.nodes.length + ' concepts · ' + graph.edges.length + ' connections'
+    : 'Focused on ' + focusId + ' · ' + neighbors.length + ' of ' +
+      new Set(ranked.map(edge => edge.from === focusId ? edge.to : edge.from)).size + ' neighbors';
+  if (!fullView) network.fit();
 }
+
+get('view').onclick = () => {
+  if (!graph.nodes.length) return;
+  fullView = !fullView;
+  draw();
+};
 
 async function loadSample() {
   const response = await fetch('./sample.json');

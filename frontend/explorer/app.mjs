@@ -214,7 +214,7 @@ function draw() {
 
   }, {
 
-    layout: { randomSeed: 48 },
+    layout: { improvedLayout: false, randomSeed: 48 },
 
     nodes: { shape: 'dot', font: { color: '#f3f5ff', size: 21, strokeWidth: 4, strokeColor: '#131827' } },
 

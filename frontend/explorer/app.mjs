@@ -29,6 +29,12 @@ function showConcept(id) {
   for (const edge of graph.edges.filter(edge => edge.from === id || edge.to === id)) {
     const item = document.createElement('li');
     item.append(conceptButton(edge.from === id ? edge.to : edge.from), element('p', edge.relation));
+    if (edge.evidence?.length) {
+      const evidence = document.createElement('details');
+      evidence.append(element('summary', 'View source passages'));
+      for (const passage of edge.evidence) evidence.append(element('blockquote', passage));
+      item.append(evidence);
+    }
     neighbors.append(item);
   }
   panel.append(neighbors.children.length ? neighbors : element('p', 'No connections in this view.'));

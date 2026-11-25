@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User guide | Knowledge Graph Explorer</title>
+<style>
+:root{color-scheme:dark;font:100%/1.65 system-ui,sans-serif;background:#10131e;color:#f3f5ff}
+body{max-width:46rem;margin:auto;padding:2rem 1.25rem 4rem}h1,h2{line-height:1.2}h1{font-size:clamp(2rem,5vw,3.2rem)}h2{margin-top:2rem}li{margin:.7rem 0}blockquote{border-left:.25rem solid #b5a6ff;background:#191e2d;margin:1rem 0;padding:1rem}strong{color:#d9d1ff}
+@media print{:root{color-scheme:light;background:white;color:black}strong{color:inherit}blockquote{background:#eee}}
+</style></head><body><main>
+<h1>How to read your knowledge graph</h1>
+<p>Start with the words <strong>Focused on</strong> above the graph. That heading names the concept you are exploring. The outlined box represents that concept, and each line leads to a related concept.</p>
+<h2>Try a one-minute example</h2>
+<p>The explorer opens with a sample graph. To see how it builds connections from your own words, paste these three sentences into <strong>Or paste text</strong> and choose <strong>Generate graph</strong>.</p>
+<blockquote>Solar panels generate electricity. Batteries store electricity. Homes use electricity.</blockquote>
+<ol>
+<li>Under <strong>Concepts</strong>, search for <strong>electricity</strong> and select it. The heading now reads <strong>Focused on electricity</strong>. Up to six neighbors appear around it.</li>
+<li>To understand the line to <strong>batteries</strong>, find that neighbor in the connection details below the graph. Open <strong>View source passages</strong>. You will see “Batteries store electricity” and your focus stays on electricity.</li>
+<li>Now click the <strong>batteries</strong> box in the graph. The heading changes to <strong>Focused on batteries</strong>. You moved one step along a connection. The explorer now shows the neighbors of batteries within the same document.</li>
+<li>To retrace that step, click <strong>electricity</strong> again. If an earlier concept is out of view, type its name in <strong>Find a concept</strong> and select it. For a longer exploration, jot down the concept names in order so you can retrace your route.</li>
+</ol>
+<h2>What a connection tells you</h2>
+<p>For pasted text and PDFs, a line means two terms appeared together in a passage. <strong>Shared passages</strong> gives the count. Read the excerpts to learn what the author actually said about the terms. The built-in sample comes from an existing dataset and shows its recorded relationship descriptions.</p>
+<h2>Explore your own document</h2>
+<p>Select <strong>Choose a PDF</strong> and then <strong>Generate graph</strong>. Use a PDF with selectable text, up to 20 MB and 100 pages. For scanned pages, run OCR first or paste the text. The explorer processes up to 120,000 characters in your browser. Generating another graph or loading the sample replaces the current graph.</p>
+<h2>Choose the view you need</h2>
+<ul>
+<li><strong>Focus view</strong> helps you read one concept and its closest connections. Use the details below for its full list of connections in the generated graph.</li>
+<li><strong>Full graph</strong> shows all concepts and connections included in the graph. Switch back to <strong>Focus view</strong> to concentrate on the selected concept.</li>
+<li><strong>+</strong> and <strong>−</strong> change magnification. Drag empty space to pan. <strong>Fit graph</strong> frames the current view and keeps the current focus.</li>
+<li><strong>Export JSON</strong> downloads the complete graph, including available source excerpts. Use it before replacing a graph you want to keep.</li>
+</ul>
+<p>If you opened this guide from the explorer, your graph is waiting in the original tab.</p>
+</main></body></html>

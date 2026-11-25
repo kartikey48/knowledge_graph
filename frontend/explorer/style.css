@@ -5,3 +5,19 @@
 
 summary { cursor: pointer; color: var(--accent); }
 blockquote { margin: .6rem 0; padding-left: .75rem; border-left: 2px solid var(--accent); line-height: 1.5; }
+
+.workspace { grid-template-columns: minmax(195px, 235px) minmax(0, 1fr); align-items: start; }
+.details { grid-column: 2; display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr; gap: .5rem 1.5rem; }
+.details h2, .details label, .details input, #results { grid-column: 1; }
+.details hr { display: none; }
+#details { grid-column: 2; grid-row: 1 / span 4; max-height: 23rem; }
+.actions { flex-wrap: wrap; }
+#graph { height: clamp(450px, 66vh, 820px); }
+@media (max-width: 760px) {
+  .workspace { grid-template-columns: 1fr; }
+  .details { grid-column: 1; }
+}
+@media (max-width: 520px) {
+  .details { display: block; }
+  #graph { height: 640px; }
+}
